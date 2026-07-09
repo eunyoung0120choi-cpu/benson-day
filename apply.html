@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>초복 벤슨 신청</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #F4611A;
+    --orange-light: #FF7A35;
+    --orange-pale: #FFF0E8;
+    --orange-border: #FFD4B8;
+    --gray-50: #FAFAFA;
+    --gray-100: #F5F5F5;
+    --gray-200: #EBEBEB;
+    --gray-400: #B0B0B0;
+    --gray-600: #707070;
+    --gray-800: #2A2A2A;
+    --white: #FFFFFF;
+    --red: #E53E3E;
+    --blue: #2B6CB0;
+    --blue-bg: #EBF4FF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--gray-100); font-family: 'Noto Sans KR', sans-serif; color: var(--gray-800); min-height: 100vh; }
+  .header { background: var(--white); border-bottom: 3px solid var(--orange); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .header-inner { max-width: 640px; margin: 0 auto; padding: 18px 24px; }
+  .header-title { font-size: 20px; font-weight: 900; color: var(--gray-800); letter-spacing: -0.5px; }
+  .header-title span { color: var(--orange); }
+  .header-sub { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+  .main { max-width: 640px; margin: 0 auto; padding: 32px 24px 60px; }
+  .banner { background: linear-gradient(135deg, var(--orange), var(--orange-light)); border-radius: 16px; padding: 22px 24px; margin-bottom: 20px; color: #fff; box-shadow: 0 6px 20px rgba(244,97,26,0.25); }
+  .banner-title { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+  .banner-sub { font-size: 12.5px; opacity: 0.92; line-height: 1.5; }
+  .card { background: var(--white); border-radius: 16px; border: 1px solid var(--gray-200); padding: 28px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .card-title { font-size: 12px; font-weight: 700; color: var(--orange); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--orange-border); display: flex; justify-content: space-between; align-items: center; }
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label { display: block; font-size: 12px; font-weight: 600; color: var(--gray-600); margin-bottom: 6px; }
+  .field label .req { color: var(--orange); margin-left: 2px; }
+  .field-row { display: flex; gap: 8px; }
+  .field-row input { flex: 1; }
+  .lookup-btn { padding: 0 16px; background: var(--white); border: 1.5px solid var(--gray-200); color: var(--gray-600); border-radius: 10px; font-size: 13px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+  .lookup-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .field input, .field select { width: 100%; padding: 11px 14px; background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 10px; font-size: 14px; font-family: 'Noto Sans KR', sans-serif; color: var(--gray-800); transition: border-color 0.15s, box-shadow 0.15s; outline: none; }
+  .field input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(244,97,26,0.1); }
+  .field input.has-error { border-color: var(--red); }
+  .err-msg { font-size: 11px; color: var(--red); margin-top: 5px; display: none; }
+  .err-msg.show { display: block; }
+  .hint { font-size: 11.5px; color: var(--gray-400); margin-top: 6px; line-height: 1.5; }
+  .edit-notice { background: var(--blue-bg); border: 1.5px solid #BEE3F8; border-radius: 10px; padding: 12px 16px; font-size: 12.5px; color: var(--blue); margin-bottom: 16px; display: none; align-items: center; gap: 8px; }
+  .edit-notice.show { display: flex; }
+  .qty-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .qty-box { background: var(--gray-50); border: 1.5px solid var(--gray-200); border-radius: 12px; padding: 14px 12px; text-align: center; }
+  .qty-box label { font-size: 12.5px; font-weight: 700; color: var(--gray-600); margin-bottom: 8px; display: block; }
+  .qty-box input { text-align: center; font-size: 18px; font-weight: 800; color: var(--orange); border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 8px 4px; width: 100%; font-family: 'Noto Sans KR', sans-serif; outline: none; }
+  .qty-box input:focus { border-color: var(--orange); }
+  .total-box { margin-top: 14px; background: var(--orange-pale); border-radius: 12px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; }
+  .total-label { font-size: 13px; font-weight: 700; color: var(--gray-800); }
+  .total-value { font-size: 22px; font-weight: 900; color: var(--orange); }
+  .total-box.pk { background: #FDF2F8; }
+  .total-value.pk { color: #B83280; }
+  .gift-card { background: var(--gray-50); border: 1.5px solid var(--gray-200); border-radius: 12px; padding: 16px 16px 12px; margin-bottom: 10px; transition: border-color 0.15s; }
+  .gift-card:focus-within { border-color: #F9A8D4; }
+  .gift-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .gift-num { font-size: 12px; font-weight: 700; color: #B83280; background: #FDF2F8; padding: 3px 10px; border-radius: 20px; }
+  .gift-del { background: none; border: 1.5px solid var(--gray-200); color: var(--gray-400); border-radius: 8px; padding: 4px 12px; cursor: pointer; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
+  .gift-del:hover { border-color: var(--red); color: var(--red); }
+  .gift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .gift-add-btn { width: 100%; padding: 12px; background: var(--white); border: 1.5px dashed #F9A8D4; color: #B83280; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; margin-top: 4px; }
+  .gift-add-btn:hover { background: #FDF2F8; border-color: #B83280; }
+  .gift-empty { text-align: center; padding: 18px; font-size: 12.5px; color: var(--gray-400); }
+  .submit-btn { width: 100%; padding: 16px; background: var(--orange); color: var(--white); border: none; border-radius: 12px; font-size: 16px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: background 0.15s, transform 0.1s; letter-spacing: 0.3px; box-shadow: 0 4px 14px rgba(244,97,26,0.3); }
+  .submit-btn:hover { background: var(--orange-light); }
+  .submit-btn:active { transform: scale(0.99); }
+  .submit-btn:disabled { background: var(--gray-200); color: var(--gray-400); box-shadow: none; cursor: not-allowed; }
+  .toast { position: fixed; top: 24px; right: 24px; z-index: 9999; padding: 14px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; box-shadow: 0 6px 24px rgba(0,0,0,0.15); display: none; animation: slideIn 0.3s ease; max-width: 320px; }
+  .toast.success { background: var(--orange); color: var(--white); }
+  .toast.error { background: var(--red); color: var(--white); }
+  .toast.info { background: var(--blue); color: var(--white); }
+  .toast.show { display: block; }
+  .success-screen { display: none; text-align: center; padding: 60px 24px; }
+  .success-screen.show { display: block; }
+  .success-icon { width: 72px; height: 72px; background: var(--orange-pale); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 32px; }
+  .success-title { font-size: 22px; font-weight: 900; color: var(--gray-800); margin-bottom: 10px; }
+  .success-sub { font-size: 14px; color: var(--gray-600); line-height: 1.6; }
+  .success-again { margin-top: 28px; padding: 12px 28px; background: var(--orange); color: var(--white); border: none; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; }
+  .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.85); z-index: 9998; align-items: center; justify-content: center; flex-direction: column; gap: 14px; }
+  .loading-overlay.show { display: flex; }
+  .spinner { width: 36px; height: 36px; border: 3px solid var(--orange-border); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  .loading-text { font-size: 14px; color: var(--gray-600); font-weight: 600; }
+  .config-notice { background: #FFFBEB; border: 1.5px solid #F6E05E; border-radius: 10px; padding: 14px 16px; margin-bottom: 20px; font-size: 13px; color: #744210; display: none; }
+  .config-notice.show { display: block; }
+  .config-notice strong { display: block; margin-bottom: 4px; font-weight: 700; }
+  @keyframes slideIn { from { opacity:0; transform:translateY(-10px) } to { opacity:1; transform:translateY(0) } }
+  @keyframes spin { to { transform: rotate(360deg) } }
+  @media (max-width: 480px) {
+    .card { padding: 20px 16px; }
+    .main { padding: 20px 16px 60px; }
+    .qty-grid { gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-title">초복 <span>벤슨</span> 신청</div>
+    <div class="header-sub">부서별 신청 인원을 입력해 주세요</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="config-notice show" id="config-notice">
+    <strong>⚙️ Firebase 설정 필요</strong>
+    스크립트 상단의 <code>firebaseConfig</code> 값을 Firebase 프로젝트 정보로 교체해 주세요.
+  </div>
+
+  <div class="banner">
+    <div class="banner-title">🍦 초복 기념 벤슨 나눔 이벤트</div>
+    <div class="banner-sub">무더운 여름, 임직원 여러분을 위해 시원한 벤슨 아이스크림을 준비했습니다.<br>부서별로 필요한 수량을 신청해 주세요.</div>
+  </div>
+
+  <div class="success-screen" id="success-screen">
+    <div class="success-icon">✓</div>
+    <div class="success-title" id="success-title">신청이 완료되었습니다</div>
+    <div class="success-sub" id="success-msg">신청 내용이 정상적으로 접수되었습니다.</div>
+    <button class="success-again" onclick="resetForm()">추가/다른 부서 신청하기</button>
+  </div>
+
+  <div id="form-area">
+    <div class="card">
+      <div class="card-title">부서 정보</div>
+
+      <div class="edit-notice" id="edit-notice">
+        ✏️ <span>기존 신청 내역을 불러왔습니다. 수정 후 저장해 주세요.</span>
+      </div>
+
+      <div class="field">
+        <label>부서명<span class="req">*</span></label>
+        <div class="field-row">
+          <input type="text" id="dept" placeholder="예) 인재확보팀" oninput="onDeptInput()">
+          <button type="button" class="lookup-btn" onclick="lookupDept()">기존 신청 조회</button>
+        </div>
+        <div class="err-msg" id="err-dept">부서명을 입력해주세요</div>
+        <div class="hint">이미 신청하셨다면 부서명 입력 후 <b>[기존 신청 조회]</b>를 눌러 수정할 수 있어요.</div>
+      </div>
+
+      <div class="field">
+        <label>담당자 성명 <span style="color:var(--gray-400);font-weight:400">(선택)</span></label>
+        <input type="text" id="manager" placeholder="신청 담당자 이름">
+      </div>
+
+      <div class="field">
+        <label>연락처 <span style="color:var(--gray-400);font-weight:400">(선택)</span></label>
+        <input type="text" id="phone" placeholder="예) 010-0000-0000">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🍦 벤슨 아이스크림 신청 인원 (지역별)</div>
+      <div class="qty-grid">
+        <div class="qty-box">
+          <label>을지로</label>
+          <input type="number" id="qty-eulji" min="0" value="0" oninput="updateTotal()">
+        </div>
+        <div class="qty-box">
+          <label>죽전</label>
+          <input type="number" id="qty-jukjeon" min="0" value="0" oninput="updateTotal()">
+        </div>
+        <div class="qty-box">
+          <label>여의도</label>
+          <input type="number" id="qty-yeouido" min="0" value="0" oninput="updateTotal()">
+        </div>
+      </div>
+      <div class="total-box">
+        <span class="total-label">벤슨 아이스크림 총 수량</span>
+        <span class="total-value" id="total-qty">0개</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎁 배스킨라빈스 기프티콘으로 받을 사람 — <span id="gift-count-label">0명</span></div>
+      <div class="hint" style="margin-bottom:14px">아이스크림 대신 기프티콘으로 받고 싶은 직원이 있다면 성명과 연락처를 추가해 주세요. 기프티콘은 개인 연락처로 발송됩니다.</div>
+      <div id="gift-container"></div>
+      <button type="button" class="gift-add-btn" onclick="addGift()">+ 기프티콘 신청자 추가</button>
+      <div class="total-box pk" style="margin-top:14px">
+        <span class="total-label">기프티콘 신청 인원</span>
+        <span class="total-value pk" id="gift-total">0명</span>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="handleSubmit()">신청 완료</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loading-text">저장 중...</div>
+</div>
+
+<!-- ★ Firebase SDK (compat 버전) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+// ═══════════════════════════════════════════════════
+// ★ Firebase 프로젝트 설정 (admin.html과 동일하게 입력)
+// 기존 eagles-day 프로젝트를 그대로 써도 되고, 새 프로젝트를 만들어도 됩니다.
+// 새 프로젝트를 쓸 경우 Firebase Console → 프로젝트 설정 → 앱 → firebaseConfig 값으로 교체하세요.
+// ═══════════════════════════════════════════════════
+var firebaseConfig = {
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "YOUR_PROJECT.firebaseapp.com",
+  projectId:         "YOUR_PROJECT",
+  storageBucket:     "YOUR_PROJECT.firebasestorage.app",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
+};
+var COLLECTION_NAME = "benson_applications";
+// ═══════════════════════════════════════════════════
+
+var CONFIGURED = firebaseConfig.apiKey !== "YOUR_API_KEY";
+var db;
+
+try {
+  if (CONFIGURED) {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    document.getElementById("config-notice").classList.remove("show");
+  }
+} catch(e) {
+  console.warn("Firebase 초기화 오류:", e);
+}
+
+var isEditMode = false;
+var currentDocId = null;
+
+// ── 부서명 → 문서 ID 변환 (Firestore 문서ID에 못 쓰는 문자 치환) ──
+function slugify(dept) {
+  return dept.trim().replace(/[\/\.\#\$\[\]\s]+/g, "_");
+}
+
+// ── 기프티콘 신청자 목록 ────────────────────────────
+var giftList = [];
+var giftSeq = 0;
+
+function makeGift(name, phone) {
+  return { id: ++giftSeq, name: name || "", phone: phone || "" };
+}
+
+function renderGifts() {
+  var c = document.getElementById("gift-container");
+  document.getElementById("gift-count-label").textContent = giftList.length + "명";
+  document.getElementById("gift-total").textContent = giftList.length + "명";
+  if (giftList.length === 0) {
+    c.innerHTML = '<div class="gift-empty">기프티콘 신청자가 없습니다</div>';
+    return;
+  }
+  c.innerHTML = "";
+  giftList.forEach(function(g, i) {
+    var div = document.createElement("div");
+    div.className = "gift-card";
+    div.innerHTML =
+      '<div class="gift-card-header">' +
+        '<span class="gift-num">기프티콘 신청자 ' + (i + 1) + '</span>' +
+        '<button type="button" class="gift-del" onclick="delGift(' + g.id + ')">삭제</button>' +
+      '</div>' +
+      '<div class="gift-grid">' +
+        '<div class="field" style="margin-bottom:0">' +
+          '<label>성명<span class="req">*</span></label>' +
+          '<input type="text" placeholder="성명" value="' + escAttr(g.name) + '" oninput="upGift(' + g.id + ',\'name\',this.value)">' +
+        '</div>' +
+        '<div class="field" style="margin-bottom:0">' +
+          '<label>연락처<span class="req">*</span></label>' +
+          '<input type="text" placeholder="010-0000-0000" value="' + escAttr(g.phone) + '" oninput="upGift(' + g.id + ',\'phone\',this.value)">' +
+        '</div>' +
+      '</div>';
+    c.appendChild(div);
+  });
+}
+
+function escAttr(s) { return (s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;"); }
+
+function upGift(id, field, val) {
+  var g = giftList.find(function(x){ return x.id === id; });
+  if (g) g[field] = val;
+}
+
+function addGift() {
+  giftList.push(makeGift());
+  renderGifts();
+}
+
+function delGift(id) {
+  giftList = giftList.filter(function(g){ return g.id !== id; });
+  renderGifts();
+}
+
+renderGifts();
+
+function onDeptInput() {
+  if (isEditMode) {
+    // 부서명을 바꾸면 수정 모드 해제 (다른 부서로 취급)
+    isEditMode = false;
+    currentDocId = null;
+    document.getElementById("edit-notice").classList.remove("show");
+  }
+  document.getElementById("dept").classList.remove("has-error");
+  document.getElementById("err-dept").classList.remove("show");
+}
+
+function updateTotal() {
+  var e = Number(document.getElementById("qty-eulji").value) || 0;
+  var j = Number(document.getElementById("qty-jukjeon").value) || 0;
+  var y = Number(document.getElementById("qty-yeouido").value) || 0;
+  document.getElementById("total-qty").textContent = (e + j + y) + "개";
+}
+
+// ── 기존 신청 조회 ─────────────────────────────────
+function lookupDept() {
+  var dept = document.getElementById("dept").value.trim();
+  if (!dept) {
+    setErr("부서명을 먼저 입력해주세요");
+    return;
+  }
+  if (!CONFIGURED) {
+    showToast("Firebase 미설정 상태입니다.", "error");
+    return;
+  }
+  document.getElementById("loading-text").textContent = "조회 중...";
+  document.getElementById("loading").classList.add("show");
+
+  var docId = slugify(dept);
+  db.collection(COLLECTION_NAME).doc(docId).get()
+    .then(function(doc) {
+      document.getElementById("loading").classList.remove("show");
+      if (doc.exists) {
+        var d = doc.data();
+        document.getElementById("dept").value = d.dept || dept;
+        document.getElementById("manager").value = d.manager || "";
+        document.getElementById("phone").value = d.phone || "";
+        document.getElementById("qty-eulji").value = d.qtyEulji || 0;
+        document.getElementById("qty-jukjeon").value = d.qtyJukjeon || 0;
+        document.getElementById("qty-yeouido").value = d.qtyYeouido || 0;
+        updateTotal();
+        giftList = (d.giftRecipients || []).map(function(g){ return makeGift(g.name, g.phone); });
+        renderGifts();
+        isEditMode = true;
+        currentDocId = docId;
+        document.getElementById("edit-notice").classList.add("show");
+        showToast("기존 신청 내역을 불러왔습니다", "info");
+      } else {
+        isEditMode = false;
+        currentDocId = null;
+        giftList = [];
+        renderGifts();
+        document.getElementById("edit-notice").classList.remove("show");
+        showToast("신규 신청으로 진행됩니다 (기존 내역 없음)", "info");
+      }
+    })
+    .catch(function(err) {
+      document.getElementById("loading").classList.remove("show");
+      showToast("조회에 실패했습니다", "error");
+      console.error(err);
+    });
+}
+
+function setErr(msg) {
+  document.getElementById("err-dept").textContent = msg;
+  document.getElementById("err-dept").classList.add("show");
+  document.getElementById("dept").classList.add("has-error");
+}
+
+function validate() {
+  document.getElementById("err-dept").classList.remove("show");
+  document.getElementById("dept").classList.remove("has-error");
+  var dept = document.getElementById("dept").value.trim();
+  if (!dept) { setErr("부서명을 입력해주세요"); return false; }
+  var giftInvalid = giftList.some(function(g){ return !g.name.trim() || !g.phone.trim(); });
+  if (giftInvalid) {
+    showToast("기프티콘 신청자의 성명/연락처를 모두 입력해주세요", "error");
+    return false;
+  }
+  return true;
+}
+
+// ── 제출 ──────────────────────────────────────────
+function handleSubmit() {
+  if (!validate()) return;
+
+  if (!CONFIGURED) {
+    showToast("Firebase 미설정 상태입니다. firebaseConfig를 입력해 주세요.", "error");
+    return;
+  }
+
+  var dept = document.getElementById("dept").value.trim();
+  var manager = document.getElementById("manager").value.trim();
+  var phone = document.getElementById("phone").value.trim();
+  var qE = Number(document.getElementById("qty-eulji").value) || 0;
+  var qJ = Number(document.getElementById("qty-jukjeon").value) || 0;
+  var qY = Number(document.getElementById("qty-yeouido").value) || 0;
+  var total = qE + qJ + qY;
+  var giftRecipients = giftList.map(function(g){ return { name: g.name.trim(), phone: g.phone.trim() }; });
+  var giftQty = giftRecipients.length;
+
+  if (total <= 0 && giftQty <= 0) {
+    showToast("벤슨 신청 수량 또는 기프티콘 신청자를 1건 이상 입력해주세요", "error");
+    return;
+  }
+
+  var docId = currentDocId || slugify(dept);
+  var payload = {
+    dept: dept,
+    manager: manager,
+    phone: phone,
+    qtyEulji: qE,
+    qtyJukjeon: qJ,
+    qtyYeouido: qY,
+    qtyTotal: total,
+    giftRecipients: giftRecipients,
+    giftQty: giftQty,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  if (!isEditMode) {
+    payload.submittedAt = firebase.firestore.FieldValue.serverTimestamp();
+  }
+
+  document.getElementById("submit-btn").disabled = true;
+  document.getElementById("loading-text").textContent = "저장 중...";
+  document.getElementById("loading").classList.add("show");
+
+  db.collection(COLLECTION_NAME).doc(docId).set(payload, { merge: true })
+    .then(function() {
+      document.getElementById("loading").classList.remove("show");
+      document.getElementById("form-area").style.display = "none";
+      document.getElementById("success-title").textContent = isEditMode ? "수정이 완료되었습니다" : "신청이 완료되었습니다";
+      var msg = dept + " — 을지로 " + qE + " / 죽전 " + qJ + " / 여의도 " + qY + " (총 " + total + "개)";
+      if (giftQty > 0) msg += " · 기프티콘 " + giftQty + "명";
+      msg += "이 저장되었습니다.";
+      document.getElementById("success-msg").textContent = msg;
+      document.getElementById("success-screen").classList.add("show");
+    })
+    .catch(function(err) {
+      document.getElementById("loading").classList.remove("show");
+      document.getElementById("submit-btn").disabled = false;
+      showToast("저장에 실패했습니다. 잠시 후 다시 시도해주세요.", "error");
+      console.error(err);
+    });
+}
+
+function resetForm() {
+  document.getElementById("success-screen").classList.remove("show");
+  document.getElementById("form-area").style.display = "block";
+  document.getElementById("dept").value = "";
+  document.getElementById("manager").value = "";
+  document.getElementById("phone").value = "";
+  document.getElementById("qty-eulji").value = 0;
+  document.getElementById("qty-jukjeon").value = 0;
+  document.getElementById("qty-yeouido").value = 0;
+  updateTotal();
+  giftList = [];
+  renderGifts();
+  isEditMode = false;
+  currentDocId = null;
+  document.getElementById("edit-notice").classList.remove("show");
+  document.getElementById("submit-btn").disabled = false;
+}
+
+function showToast(msg, type) {
+  var el = document.getElementById("toast");
+  el.textContent = msg;
+  el.className = "toast " + (type||"success") + " show";
+  setTimeout(function(){ el.classList.remove("show"); }, 3500);
+}
+</script>
+</body>
+</html>

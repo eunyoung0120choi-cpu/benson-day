@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>초복 벤슨 — 관리자</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+<style>
+  :root {
+    --orange: #F4611A;
+    --orange-light: #FF7A35;
+    --orange-pale: #FFF0E8;
+    --orange-border: #FFD4B8;
+    --gray-50: #FAFAFA;
+    --gray-100: #F5F5F5;
+    --gray-200: #EBEBEB;
+    --gray-300: #D0D0D0;
+    --gray-400: #B0B0B0;
+    --gray-600: #707070;
+    --gray-800: #2A2A2A;
+    --white: #FFFFFF;
+    --green: #276749;
+    --green-bg: #F0FFF4;
+    --red: #E53E3E;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--gray-100); font-family: 'Noto Sans KR', sans-serif; color: var(--gray-800); min-height: 100vh; }
+
+  .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .login-card { background: var(--white); border-radius: 20px; border: 1px solid var(--gray-200); padding: 44px 40px; width: 100%; max-width: 400px; box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
+  .login-label { font-size: 10px; font-weight: 700; color: var(--orange); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; }
+  .login-title { font-size: 24px; font-weight: 900; color: var(--gray-800); margin-bottom: 32px; }
+  .login-field { margin-bottom: 16px; }
+  .login-field label { display: block; font-size: 12px; font-weight: 600; color: var(--gray-600); margin-bottom: 6px; }
+  .login-field input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--gray-200); border-radius: 10px; font-size: 14px; font-family: 'Noto Sans KR', sans-serif; outline: none; transition: border-color 0.15s; }
+  .login-field input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(244,97,26,0.1); }
+  .login-btn { width: 100%; padding: 14px; background: var(--orange); color: var(--white); border: none; border-radius: 10px; font-size: 15px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; margin-top: 8px; box-shadow: 0 4px 14px rgba(244,97,26,0.3); transition: background 0.15s; }
+  .login-btn:hover { background: var(--orange-light); }
+  .login-err { font-size: 13px; color: var(--red); margin-top: 10px; text-align: center; display: none; }
+  .login-err.show { display: block; }
+
+  .admin-wrap { display: none; min-height: 100vh; flex-direction: column; }
+  .admin-wrap.show { display: flex; flex-direction: column; }
+  .header { background: var(--white); border-bottom: 3px solid var(--orange); box-shadow: 0 2px 12px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: 1180px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .header-title { font-size: 18px; font-weight: 900; color: var(--gray-800); }
+  .header-title span { color: var(--orange); }
+  .header-right { display: flex; gap: 10px; align-items: center; }
+  .badge-admin { font-size: 11px; font-weight: 700; color: var(--orange); background: var(--orange-pale); padding: 4px 10px; border-radius: 20px; }
+  .logout-btn { font-size: 12px; color: var(--gray-400); background: none; border: 1px solid var(--gray-200); border-radius: 8px; padding: 5px 12px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
+  .logout-btn:hover { color: var(--red); border-color: var(--red); }
+  .admin-main { max-width: 1180px; margin: 0 auto; padding: 28px 24px 60px; flex: 1; width: 100%; }
+  .stats-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; margin-bottom: 24px; }
+  .stat-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); padding: 18px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .stat-label { font-size: 12px; color: var(--gray-600); margin-bottom: 8px; font-weight: 600; }
+  .stat-value { font-size: 26px; font-weight: 900; color: var(--gray-800); }
+  .stat-value.accent { color: var(--orange); }
+  .toolbar { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); padding: 16px 20px; margin-bottom: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .search-input { flex: 1; min-width: 200px; padding: 9px 14px; border: 1.5px solid var(--gray-200); border-radius: 9px; font-size: 14px; font-family: 'Noto Sans KR', sans-serif; outline: none; transition: border-color 0.15s; }
+  .search-input:focus { border-color: var(--orange); }
+  .refresh-btn { padding: 9px 16px; border: 1.5px solid var(--gray-200); border-radius: 9px; background: var(--white); cursor: pointer; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; color: var(--gray-600); transition: all 0.15s; }
+  .refresh-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .dl-btn { padding: 9px 18px; background: var(--orange); color: var(--white); border: none; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; box-shadow: 0 3px 10px rgba(244,97,26,0.25); transition: background 0.15s; white-space: nowrap; }
+  .dl-btn:hover { background: var(--orange-light); }
+  .table-wrap { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: var(--gray-50); border-bottom: 2px solid var(--gray-200); }
+  th { padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 700; color: var(--gray-600); letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
+  td { padding: 12px 16px; font-size: 13px; color: var(--gray-800); border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--gray-50); }
+  td.num { text-align: center; font-variant-numeric: tabular-nums; }
+  td.qty-input input { width: 60px; text-align: center; padding: 5px 4px; border: 1.5px solid var(--gray-200); border-radius: 6px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; }
+  td.qty-input input:focus { border-color: var(--orange); outline: none; }
+  .no-data { text-align: center; padding: 60px; color: var(--gray-400); font-size: 14px; }
+  .row-btns { display: flex; gap: 6px; }
+  .row-btn { background: none; border: 1px solid var(--gray-200); color: var(--gray-400); border-radius: 6px; padding: 3px 10px; cursor: pointer; font-size: 11px; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
+  .row-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .row-btn.del:hover { border-color: var(--red); color: var(--red); }
+  .row-btn.save { display: none; }
+  .toast { position: fixed; top: 24px; right: 24px; z-index: 9999; padding: 13px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; box-shadow: 0 6px 24px rgba(0,0,0,0.15); display: none; animation: slideIn 0.3s ease; }
+  .toast.success { background: var(--orange); color: var(--white); }
+  .toast.error { background: var(--red); color: var(--white); }
+  .toast.show { display: block; }
+  .config-notice { background: #FFFBEB; border: 1.5px solid #F6E05E; border-radius: 10px; padding: 14px 18px; font-size: 13px; color: #744210; margin-bottom: 20px; display: none; }
+  .config-notice.show { display: block; }
+  .mini-spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--orange-border); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 8px; }
+  @keyframes slideIn { from { opacity:0; transform:translateY(-10px) } to { opacity:1; transform:translateY(0) } }
+  @keyframes spin { to { transform: rotate(360deg) } }
+  @media (max-width: 900px) {
+    .stats-row { grid-template-columns: 1fr 1fr 1fr; }
+    .admin-main { padding: 20px 16px 40px; }
+    .table-wrap { overflow-x: auto; }
+    table { min-width: 820px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="login-wrap" id="login-wrap">
+  <div class="login-card">
+    <div class="login-label">Benson Day</div>
+    <div class="login-title">관리자 로그인</div>
+    <div class="login-field">
+      <label>아이디</label>
+      <input type="text" id="login-id" placeholder="admin" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-field">
+      <label>비밀번호</label>
+      <input type="password" id="login-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">로그인</button>
+    <div class="login-err" id="login-err">아이디 또는 비밀번호가 올바르지 않습니다</div>
+    <div style="font-size:11px;color:var(--gray-400);margin-top:16px;text-align:center">기본 계정: admin / 1234</div>
+  </div>
+</div>
+
+<div class="admin-wrap" id="admin-wrap">
+  <div class="header">
+    <div class="header-inner">
+      <div class="header-title">초복 벤슨 <span>관리자</span></div>
+      <div class="header-right">
+        <span class="badge-admin">ADMIN</span>
+        <button class="logout-btn" onclick="doLogout()">로그아웃</button>
+      </div>
+    </div>
+  </div>
+  <div class="admin-main">
+    <div class="config-notice" id="cfg-notice">
+      <strong>⚙️ Firebase 설정 필요</strong>
+      스크립트 상단의 <code>firebaseConfig</code>와 관리자 계정(ADMIN_ID / ADMIN_PW)을 실제 값으로 교체해 주세요. apply.html과 동일한 설정을 사용해야 합니다.
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">신청 부서 수</div><div class="stat-value accent" id="s-count">—</div></div>
+      <div class="stat-card"><div class="stat-label">벤슨 총 수량</div><div class="stat-value" id="s-total">—</div></div>
+      <div class="stat-card"><div class="stat-label">을지로</div><div class="stat-value" id="s-eulji">—</div></div>
+      <div class="stat-card"><div class="stat-label">죽전</div><div class="stat-value" id="s-jukjeon">—</div></div>
+      <div class="stat-card"><div class="stat-label">여의도</div><div class="stat-value" id="s-yeouido">—</div></div>
+      <div class="stat-card"><div class="stat-label">🎁 기프티콘 신청</div><div class="stat-value" id="s-gift" style="color:#B83280">—</div></div>
+    </div>
+    <div class="toolbar">
+      <input class="search-input" type="text" id="search" placeholder="부서명, 담당자 검색..." oninput="renderTable()">
+      <button class="refresh-btn" onclick="loadData()">↻ 새로고침</button>
+      <button class="dl-btn" onclick="downloadXlsx()">📥 엑셀 다운로드</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>NO</th><th>부서명</th><th>담당자</th><th>연락처</th>
+            <th>을지로</th><th>죽전</th><th>여의도</th><th>합계</th><th>🎁기프티콘</th><th>수정일시</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+// ═══════════════════════════════════════════════════
+// ★ Firebase 설정 (apply.html과 동일하게 입력)
+// ═══════════════════════════════════════════════════
+var firebaseConfig = {
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "YOUR_PROJECT.firebaseapp.com",
+  projectId:         "YOUR_PROJECT",
+  storageBucket:     "YOUR_PROJECT.firebasestorage.app",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
+};
+var COLLECTION_NAME = "benson_applications";
+
+// ★ 관리자 계정
+var ADMIN_ID = "admin";
+var ADMIN_PW = "1234";
+// ═══════════════════════════════════════════════════
+
+var CONFIGURED = firebaseConfig.apiKey !== "YOUR_API_KEY";
+var db;
+
+if (CONFIGURED) {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+  document.getElementById("cfg-notice").classList.remove("show");
+} else {
+  document.getElementById("cfg-notice").classList.add("show");
+}
+
+var allData = [];
+
+function doLogin() {
+  var id = document.getElementById("login-id").value.trim();
+  var pw = document.getElementById("login-pw").value;
+  if (id === ADMIN_ID && pw === ADMIN_PW) {
+    document.getElementById("login-wrap").style.display = "none";
+    document.getElementById("admin-wrap").classList.add("show");
+    loadData();
+  } else {
+    document.getElementById("login-err").classList.add("show");
+  }
+}
+
+function doLogout() {
+  document.getElementById("admin-wrap").classList.remove("show");
+  document.getElementById("login-wrap").style.display = "flex";
+  document.getElementById("login-id").value = "";
+  document.getElementById("login-pw").value = "";
+}
+
+function loadData() {
+  if (!CONFIGURED) {
+    allData = getSampleData();
+    updateStats(); renderTable();
+    return;
+  }
+  var tbody = document.getElementById("tbody");
+  tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:40px;color:var(--gray-400)"><span class="mini-spinner"></span> 불러오는 중...</td></tr>';
+
+  db.collection(COLLECTION_NAME).orderBy("dept", "asc").get()
+    .then(function(snap) {
+      allData = snap.docs.map(function(d){ return Object.assign({ _id: d.id }, d.data()); });
+      updateStats(); renderTable();
+    })
+    .catch(function(e) {
+      tbody.innerHTML = '<tr><td colspan="11" class="no-data">데이터를 불러오지 못했습니다</td></tr>';
+      console.error(e);
+    });
+}
+
+function getSampleData() {
+  return [{
+    _id: "sample1", dept: "(예시) 인재확보팀", manager: "홍길동", phone: "010-0000-0000",
+    qtyEulji: 13, qtyJukjeon: 0, qtyYeouido: 0, qtyTotal: 13,
+    giftRecipients: [{ name: "김철수", phone: "010-1234-5678" }, { name: "이영희", phone: "010-2345-6789" }],
+    updatedAt: { toDate: function(){ return new Date(); } }
+  }];
+}
+
+function updateStats() {
+  var total = allData.reduce(function(s,r){ return s + (r.qtyTotal||0); }, 0);
+  var e = allData.reduce(function(s,r){ return s + (r.qtyEulji||0); }, 0);
+  var j = allData.reduce(function(s,r){ return s + (r.qtyJukjeon||0); }, 0);
+  var y = allData.reduce(function(s,r){ return s + (r.qtyYeouido||0); }, 0);
+  var g = allData.reduce(function(s,r){ return s + ((r.giftRecipients||[]).length); }, 0);
+  document.getElementById("s-count").textContent   = allData.length + "개 부서";
+  document.getElementById("s-total").textContent   = total + "개";
+  document.getElementById("s-eulji").textContent   = e + "개";
+  document.getElementById("s-jukjeon").textContent = j + "개";
+  document.getElementById("s-yeouido").textContent = y + "개";
+  document.getElementById("s-gift").textContent    = g + "명";
+}
+
+function renderTable() {
+  var q = document.getElementById("search").value.toLowerCase();
+  var filtered = allData.filter(function(r) {
+    return !q || [r.dept, r.manager].some(function(x){ return (x||"").toLowerCase().includes(q); });
+  });
+
+  var tbody = document.getElementById("tbody");
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="11" class="no-data">표시할 데이터가 없습니다</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtered.map(function(r, i) {
+    var dt = r.updatedAt && r.updatedAt.toDate ? fmtDate(r.updatedAt.toDate()) : "—";
+    var gifts = r.giftRecipients || [];
+    var giftCell = gifts.length > 0
+      ? '<button class="row-btn" style="border-color:#F9A8D4;color:#B83280" onclick="showGifts(\'' + r._id + '\')">🎁 ' + gifts.length + '명</button>'
+      : '<span style="color:var(--gray-300);font-size:12px">—</span>';
+    return '<tr data-id="' + r._id + '">' +
+      '<td style="color:var(--gray-400);font-size:12px">' + (i+1) + '</td>' +
+      '<td style="font-weight:600">' + esc(r.dept||"") + '</td>' +
+      '<td style="color:var(--gray-600)">' + esc(r.manager||"") + '</td>' +
+      '<td style="font-size:12px;color:var(--gray-600)">' + esc(r.phone||"") + '</td>' +
+      '<td class="num qty-input"><input type="number" min="0" value="' + (r.qtyEulji||0) + '" data-field="qtyEulji" onchange="markDirty(this)"></td>' +
+      '<td class="num qty-input"><input type="number" min="0" value="' + (r.qtyJukjeon||0) + '" data-field="qtyJukjeon" onchange="markDirty(this)"></td>' +
+      '<td class="num qty-input"><input type="number" min="0" value="' + (r.qtyYeouido||0) + '" data-field="qtyYeouido" onchange="markDirty(this)"></td>' +
+      '<td class="num" style="font-weight:800;color:var(--orange)" data-total>' + (r.qtyTotal||0) + '</td>' +
+      '<td class="num">' + giftCell + '</td>' +
+      '<td style="font-size:12px;color:var(--gray-400);white-space:nowrap">' + dt + '</td>' +
+      '<td><div class="row-btns">' +
+        '<button class="row-btn save" onclick="saveRow(\'' + r._id + '\')">저장</button>' +
+        '<button class="row-btn del" onclick="delRow(\'' + r._id + '\',\'' + esc(r.dept||"") + '\')">삭제</button>' +
+      '</div></td>' +
+    '</tr>';
+  }).join("");
+}
+
+function esc(s) { return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+// 인라인 수정: 수량 변경 시 합계 재계산 + 저장 버튼 노출
+function markDirty(inputEl) {
+  var tr = inputEl.closest("tr");
+  var e = Number(tr.querySelector('[data-field="qtyEulji"]').value) || 0;
+  var j = Number(tr.querySelector('[data-field="qtyJukjeon"]').value) || 0;
+  var y = Number(tr.querySelector('[data-field="qtyYeouido"]').value) || 0;
+  tr.querySelector('[data-total]').textContent = (e + j + y);
+  tr.querySelector('.row-btn.save').style.display = "inline-block";
+}
+
+function showGifts(id) {
+  var r = allData.find(function(x){ return x._id === id; });
+  if (!r || !(r.giftRecipients||[]).length) return;
+  var lines = r.giftRecipients.map(function(g, i){ return (i+1) + ". " + g.name + " — " + g.phone; }).join("\n");
+  alert((r.dept||"") + " 기프티콘 신청자 (" + r.giftRecipients.length + "명)\n\n" + lines);
+}
+
+function saveRow(id) {
+  if (!CONFIGURED) { showToast("Firebase 미설정 상태입니다", "error"); return; }
+  var tr = document.querySelector('tr[data-id="' + id + '"]');
+  var e = Number(tr.querySelector('[data-field="qtyEulji"]').value) || 0;
+  var j = Number(tr.querySelector('[data-field="qtyJukjeon"]').value) || 0;
+  var y = Number(tr.querySelector('[data-field="qtyYeouido"]').value) || 0;
+  var total = e + j + y;
+
+  db.collection(COLLECTION_NAME).doc(id).set({
+    qtyEulji: e, qtyJukjeon: j, qtyYeouido: y, qtyTotal: total,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true })
+    .then(function() {
+      var idx = allData.findIndex(function(r){ return r._id === id; });
+      if (idx > -1) { allData[idx].qtyEulji = e; allData[idx].qtyJukjeon = j; allData[idx].qtyYeouido = y; allData[idx].qtyTotal = total; }
+      updateStats();
+      tr.querySelector('.row-btn.save').style.display = "none";
+      showToast("저장되었습니다");
+    })
+    .catch(function(){ showToast("저장에 실패했습니다", "error"); });
+}
+
+function delRow(id, name) {
+  if (!confirm('"' + name + '" 부서 신청을 삭제하시겠습니까?')) return;
+  if (!CONFIGURED) { showToast("Firebase 미설정 상태입니다", "error"); return; }
+  db.collection(COLLECTION_NAME).doc(id).delete()
+    .then(function() {
+      allData = allData.filter(function(r){ return r._id !== id; });
+      updateStats(); renderTable();
+      showToast(name + " 신청이 삭제되었습니다");
+    })
+    .catch(function(){ showToast("삭제에 실패했습니다", "error"); });
+}
+
+function fmtDate(d) {
+  var p = function(n){ return String(n).padStart(2,"0"); };
+  return d.getFullYear() + "." + p(d.getMonth()+1) + "." + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes());
+}
+
+// ── XLSX 다운로드 (업로드하신 양식과 동일한 구조: NO/부서명/을지로/죽전/여의도/신청 수량) ──
+function downloadXlsx() {
+  if (allData.length === 0) { showToast("다운로드할 데이터가 없습니다", "error"); return; }
+
+  var q = document.getElementById("search").value.toLowerCase();
+  var exportData = allData.filter(function(r) {
+    return !q || [r.dept, r.manager].some(function(x){ return (x||"").toLowerCase().includes(q); });
+  });
+
+  if (exportData.length === 0) { showToast("검색 조건에 해당하는 데이터가 없습니다", "error"); return; }
+
+  var HEADER_FILL = { patternType: "solid", fgColor: { rgb: "FDE9D9" } };
+  var HEADER_FONT = { bold: true, name: "Arial", sz: 10 };
+  var DATA_FONT   = { name: "Arial", sz: 10 };
+  var TOTAL_FONT  = { bold: true, name: "Arial", sz: 10, color: { rgb: "F4611A" } };
+  var CENTER      = { horizontal: "center", vertical: "center" };
+  var LEFT        = { horizontal: "left", vertical: "center" };
+  var THIN        = { style: "thin", color: { rgb: "000000" } };
+  var BORDER      = { top: THIN, bottom: THIN, left: THIN, right: THIN };
+
+  function hCell(v) { return { v: v, t: "s", s: { fill: HEADER_FILL, font: HEADER_FONT, alignment: CENTER, border: BORDER } }; }
+  function dCell(v, t, align) { return { v: v, t: t||"s", s: { font: DATA_FONT, alignment: align||CENTER, border: BORDER } }; }
+  function tCell(v) { return { v: v, t: "n", s: { font: TOTAL_FONT, alignment: CENTER, border: BORDER } }; }
+
+  var wb = XLSX.utils.book_new();
+
+  // ── 신청자(부서) 목록 시트: 업로드 양식과 동일 구조 ──
+  var headerRow1 = [hCell("NO"), hCell("부서명"), hCell("벤슨 신청 인원"), { v: "", s: { fill: HEADER_FILL, border: BORDER } }, { v: "", s: { fill: HEADER_FILL, border: BORDER } }, hCell("신청 수량")];
+  var headerRow2 = [hCell(""), hCell(""), hCell("을지로"), hCell("죽전"), hCell("여의도"), hCell("")];
+  var rows = exportData.map(function(r, i) {
+    return [
+      dCell(i+1, "n"),
+      dCell(r.dept || "", "s", LEFT),
+      dCell(r.qtyEulji || 0, "n"),
+      dCell(r.qtyJukjeon || 0, "n"),
+      dCell(r.qtyYeouido || 0, "n"),
+      tCell(r.qtyTotal || 0)
+    ];
+  });
+  // 합계 행
+  var sumE = exportData.reduce(function(s,r){ return s + (r.qtyEulji||0); }, 0);
+  var sumJ = exportData.reduce(function(s,r){ return s + (r.qtyJukjeon||0); }, 0);
+  var sumY = exportData.reduce(function(s,r){ return s + (r.qtyYeouido||0); }, 0);
+  var sumT = exportData.reduce(function(s,r){ return s + (r.qtyTotal||0); }, 0);
+  var totalRow = [
+    { v: "", s: { border: BORDER } },
+    { v: "합계", t: "s", s: { font: HEADER_FONT, alignment: CENTER, border: BORDER, fill: { patternType:"solid", fgColor:{ rgb:"F5F5F5" } } } },
+    { v: sumE, t: "n", s: { font: HEADER_FONT, alignment: CENTER, border: BORDER, fill: { patternType:"solid", fgColor:{ rgb:"F5F5F5" } } } },
+    { v: sumJ, t: "n", s: { font: HEADER_FONT, alignment: CENTER, border: BORDER, fill: { patternType:"solid", fgColor:{ rgb:"F5F5F5" } } } },
+    { v: sumY, t: "n", s: { font: HEADER_FONT, alignment: CENTER, border: BORDER, fill: { patternType:"solid", fgColor:{ rgb:"F5F5F5" } } } },
+    { v: sumT, t: "n", s: { font: TOTAL_FONT, alignment: CENTER, border: BORDER, fill: { patternType:"solid", fgColor:{ rgb:"F5F5F5" } } } }
+  ];
+
+  var ws1Data = [headerRow1, headerRow2].concat(rows).concat([totalRow]);
+  var ws1 = XLSX.utils.aoa_to_sheet(ws1Data);
+  ws1["!cols"] = [{wch:6},{wch:22},{wch:10},{wch:10},{wch:10},{wch:12}];
+  ws1["!merges"] = [
+    { s: { r:0, c:0 }, e: { r:1, c:0 } }, // NO
+    { s: { r:0, c:1 }, e: { r:1, c:1 } }, // 부서명
+    { s: { r:0, c:2 }, e: { r:0, c:4 } }, // 벤슨 신청 인원 (을지로/죽전/여의도)
+    { s: { r:0, c:5 }, e: { r:1, c:5 } }  // 신청 수량
+  ];
+  XLSX.utils.book_append_sheet(wb, ws1, "신청자 목록");
+
+  // ── 담당자 정보 시트 ──
+  var ws2Headers = ["NO","부서명","담당자","연락처","을지로","죽전","여의도","신청 수량","수정일시"];
+  var ws2Rows = exportData.map(function(r, i) {
+    var dt = r.updatedAt && r.updatedAt.toDate ? fmtDate(r.updatedAt.toDate()) : "";
+    return [dCell(i+1,"n"), dCell(r.dept||"","s",LEFT), dCell(r.manager||""), dCell(r.phone||""), dCell(r.qtyEulji||0,"n"), dCell(r.qtyJukjeon||0,"n"), dCell(r.qtyYeouido||0,"n"), tCell(r.qtyTotal||0), dCell(dt)];
+  });
+  var ws2Data = [ws2Headers.map(hCell)].concat(ws2Rows);
+  var ws2 = XLSX.utils.aoa_to_sheet(ws2Data);
+  ws2["!cols"] = [{wch:6},{wch:22},{wch:12},{wch:16},{wch:10},{wch:10},{wch:10},{wch:12},{wch:16}];
+  XLSX.utils.book_append_sheet(wb, ws2, "상세 정보");
+
+  // ── 기프티콘(배스킨라빈스) 신청자 명단 시트 ──
+  var ws3Headers = ["NO","부서명","성명","연락처"];
+  var ws3Rows = [];
+  var gNo = 1;
+  exportData.forEach(function(r) {
+    (r.giftRecipients||[]).forEach(function(g) {
+      ws3Rows.push([dCell(gNo++,"n"), dCell(r.dept||"","s",LEFT), dCell(g.name||""), dCell(g.phone||"")]);
+    });
+  });
+  if (ws3Rows.length > 0) {
+    var ws3Data = [ws3Headers.map(hCell)].concat(ws3Rows);
+    var ws3 = XLSX.utils.aoa_to_sheet(ws3Data);
+    ws3["!cols"] = [{wch:6},{wch:22},{wch:14},{wch:18}];
+    XLSX.utils.book_append_sheet(wb, ws3, "기프티콘 신청자");
+  }
+
+  var today = new Date();
+  var datePart = today.getFullYear() + String(today.getMonth()+1).padStart(2,"0") + String(today.getDate()).padStart(2,"0");
+  var fn = "초복_벤슨_취합_명단_" + datePart + ".xlsx";
+  XLSX.writeFile(wb, fn);
+  showToast("엑셀 파일이 다운로드되었습니다");
+}
+
+function showToast(msg, type) {
+  var el = document.getElementById("toast");
+  el.textContent = msg;
+  el.className = "toast " + (type||"success") + " show";
+  setTimeout(function(){ el.classList.remove("show"); }, 3500);
+}
+</script>
+</body>
+</html>
