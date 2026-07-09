@@ -383,7 +383,7 @@ function downloadXlsx() {
   var rows = exportData.map(function(r, i) {
     return [
       dCell(i+1, "n"),
-      dCell(r.dept || "", "s", LEFT),
+      dCell(r.dept || "", "s"),
       dCell(r.qtyEulji || 0, "n"),
       dCell(r.qtyJukjeon || 0, "n"),
       dCell(r.qtyYeouido || 0, "n"),
@@ -419,7 +419,7 @@ function downloadXlsx() {
   var ws2Headers = ["NO","부서명","담당자","연락처","을지로","죽전","여의도","신청 수량","수정일시"];
   var ws2Rows = exportData.map(function(r, i) {
     var dt = r.updatedAt && r.updatedAt.toDate ? fmtDate(r.updatedAt.toDate()) : "";
-    return [dCell(i+1,"n"), dCell(r.dept||"","s",LEFT), dCell(r.manager||""), dCell(r.phone||""), dCell(r.qtyEulji||0,"n"), dCell(r.qtyJukjeon||0,"n"), dCell(r.qtyYeouido||0,"n"), tCell(r.qtyTotal||0), dCell(dt)];
+    return [dCell(i+1,"n"), dCell(r.dept||"","s"), dCell(r.manager||""), dCell(r.phone||""), dCell(r.qtyEulji||0,"n"), dCell(r.qtyJukjeon||0,"n"), dCell(r.qtyYeouido||0,"n"), tCell(r.qtyTotal||0), dCell(dt)];
   });
   var ws2Data = [ws2Headers.map(hCell)].concat(ws2Rows);
   var ws2 = XLSX.utils.aoa_to_sheet(ws2Data);
@@ -432,7 +432,7 @@ function downloadXlsx() {
   var gNo = 1;
   exportData.forEach(function(r) {
     (r.giftRecipients||[]).forEach(function(g) {
-      ws3Rows.push([dCell(gNo++,"n"), dCell(r.dept||"","s",LEFT), dCell(g.name||""), dCell(g.phone||"")]);
+      ws3Rows.push([dCell(gNo++,"n"), dCell(r.dept||"","s"), dCell(g.name||""), dCell(g.phone||"")]);
     });
   });
   if (ws3Rows.length > 0) {
