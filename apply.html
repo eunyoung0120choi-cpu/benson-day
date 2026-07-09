@@ -68,6 +68,7 @@
   .gift-del { background: none; border: 1.5px solid var(--gray-200); color: var(--gray-400); border-radius: 8px; padding: 4px 12px; cursor: pointer; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
   .gift-del:hover { border-color: var(--red); color: var(--red); }
   .gift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .gift-note-row { margin-top: 10px; }
   .gift-add-btn { width: 100%; padding: 12px; background: var(--white); border: 1.5px dashed #F9A8D4; color: #B83280; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; margin-top: 4px; }
   .gift-add-btn:hover { background: #FDF2F8; border-color: #B83280; }
   .gift-empty { text-align: center; padding: 18px; font-size: 12.5px; color: var(--gray-400); }
@@ -247,8 +248,8 @@ function slugify(dept) {
 var giftList = [];
 var giftSeq = 0;
 
-function makeGift(name, phone) {
-  return { id: ++giftSeq, name: name || "", phone: phone || "" };
+function makeGift(name, phone, note) {
+  return { id: ++giftSeq, name: name || "", phone: phone || "", note: note || "" };
 }
 
 function renderGifts() {
@@ -277,6 +278,10 @@ function renderGifts() {
           '<label>연락처<span class="req">*</span></label>' +
           '<input type="text" placeholder="010-0000-0000" value="' + escAttr(g.phone) + '" oninput="upGift(' + g.id + ',\'phone\',this.value)">' +
         '</div>' +
+      '</div>' +
+      '<div class="field gift-note-row" style="margin-bottom:0">' +
+        '<label>비고 <span style="color:var(--gray-400);font-weight:400">(선택 — 예: 해외 근무로 배우자가 대리수령, 연락처는 배우자 번호)</span></label>' +
+        '<input type="text" placeholder="예) 해외 파견 중, 배우자 OOO 대리수령" value="' + escAttr(g.note) + '" oninput="upGift(' + g.id + ',\'note\',this.value)">' +
       '</div>';
     c.appendChild(div);
   });
@@ -346,7 +351,7 @@ function lookupDept() {
         document.getElementById("qty-jukjeon").value = d.qtyJukjeon || 0;
         document.getElementById("qty-yeouido").value = d.qtyYeouido || 0;
         updateTotal();
-        giftList = (d.giftRecipients || []).map(function(g){ return makeGift(g.name, g.phone); });
+        giftList = (d.giftRecipients || []).map(function(g){ return makeGift(g.name, g.phone, g.note); });
         renderGifts();
         isEditMode = true;
         currentDocId = docId;
@@ -403,7 +408,7 @@ function handleSubmit() {
   var qJ = Number(document.getElementById("qty-jukjeon").value) || 0;
   var qY = Number(document.getElementById("qty-yeouido").value) || 0;
   var total = qE + qJ + qY;
-  var giftRecipients = giftList.map(function(g){ return { name: g.name.trim(), phone: g.phone.trim() }; });
+  var giftRecipients = giftList.map(function(g){ return { name: g.name.trim(), phone: g.phone.trim(), note: (g.note||"").trim() }; });
   var giftQty = giftRecipients.length;
 
   if (total <= 0 && giftQty <= 0) {
