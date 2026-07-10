@@ -51,11 +51,21 @@
   .logout-btn { font-size: 12px; color: var(--gray-400); background: none; border: 1px solid var(--gray-200); border-radius: 8px; padding: 5px 12px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
   .logout-btn:hover { color: var(--red); border-color: var(--red); }
   .admin-main { max-width: 1180px; margin: 0 auto; padding: 28px 24px 60px; flex: 1; width: 100%; }
-  .stats-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; margin-bottom: 24px; }
-  .stat-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); padding: 18px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-  .stat-label { font-size: 12px; color: var(--gray-600); margin-bottom: 8px; font-weight: 600; }
-  .stat-value { font-size: 26px; font-weight: 900; color: var(--gray-800); }
+
+  .guide-card { background: linear-gradient(135deg, var(--orange), var(--orange-light)); border-radius: 16px; padding: 18px 22px; margin-bottom: 22px; color: #fff; box-shadow: 0 6px 20px rgba(244,97,26,0.25); }
+  .guide-title { font-size: 14px; font-weight: 800; margin-bottom: 10px; }
+  .guide-steps { display: flex; flex-direction: column; gap: 7px; }
+  .guide-step { display: flex; align-items: center; gap: 10px; font-size: 12.5px; line-height: 1.5; }
+  .guide-num { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .stat-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); padding: 15px 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); overflow: hidden; }
+  .stat-label { font-size: 11.5px; color: var(--gray-600); margin-bottom: 8px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stat-value { font-size: 20px; font-weight: 900; color: var(--gray-800); white-space: nowrap; }
   .stat-value.accent { color: var(--orange); }
+  .stat-value.done { color: var(--green); }
+  .stat-value.pending { color: var(--orange); }
+
   .toolbar { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); padding: 16px 20px; margin-bottom: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
   .search-input { flex: 1; min-width: 200px; padding: 9px 14px; border: 1.5px solid var(--gray-200); border-radius: 9px; font-size: 14px; font-family: 'Noto Sans KR', sans-serif; outline: none; transition: border-color 0.15s; }
   .search-input:focus { border-color: var(--orange); }
@@ -63,6 +73,19 @@
   .refresh-btn:hover { border-color: var(--orange); color: var(--orange); }
   .dl-btn { padding: 9px 18px; background: var(--orange); color: var(--white); border: none; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; box-shadow: 0 3px 10px rgba(244,97,26,0.25); transition: background 0.15s; white-space: nowrap; }
   .dl-btn:hover { background: var(--orange-light); }
+
+  .filter-group { display: flex; gap: 6px; }
+  .filter-btn { padding: 8px 14px; border: 1.5px solid var(--gray-200); background: var(--white); border-radius: 9px; font-size: 12.5px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; color: var(--gray-600); transition: all 0.15s; white-space: nowrap; }
+  .filter-btn.active { background: var(--orange); border-color: var(--orange); color: var(--white); }
+
+  .tab-nav { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid var(--gray-200); }
+  .tab-btn { padding: 12px 20px; background: none; border: none; border-bottom: 3px solid transparent; margin-bottom: -2px; font-size: 14.5px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; color: var(--gray-400); cursor: pointer; transition: all 0.15s; }
+  .tab-btn:hover { color: var(--orange); }
+  .tab-btn.active { color: var(--orange); border-bottom-color: var(--orange); }
+  .tab-panel { display: none; }
+  .tab-panel.show { display: block; }
+  .eulji-tag { font-size: 11px; font-weight: 700; color: var(--orange); background: var(--orange-pale); padding: 3px 9px; border-radius: 20px; margin-left: 8px; }
+
   .table-wrap { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
   table { width: 100%; border-collapse: collapse; }
   thead tr { background: var(--gray-50); border-bottom: 2px solid var(--gray-200); }
@@ -79,6 +102,14 @@
   .row-btn:hover { border-color: var(--orange); color: var(--orange); }
   .row-btn.del:hover { border-color: var(--red); color: var(--red); }
   .row-btn.save { display: none; }
+
+  .receive-cell-inner { display: flex; flex-direction: column; gap: 4px; align-items: center; min-width: 92px; }
+  .receive-check { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+  .receive-check input { width: 15px; height: 15px; accent-color: var(--green); cursor: pointer; }
+  .receiver-mini { width: 82px; font-size: 11px; padding: 3px 5px; border: 1.5px solid var(--gray-200); border-radius: 6px; text-align: center; font-family: 'Noto Sans KR', sans-serif; outline: none; }
+  .receiver-mini:focus { border-color: var(--orange); }
+  .received-at-mini { font-size: 10px; color: var(--green); }
+
   .toast { position: fixed; top: 24px; right: 24px; z-index: 9999; padding: 13px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; box-shadow: 0 6px 24px rgba(0,0,0,0.15); display: none; animation: slideIn 0.3s ease; }
   .toast.success { background: var(--orange); color: var(--white); }
   .toast.error { background: var(--red); color: var(--white); }
@@ -89,10 +120,11 @@
   @keyframes slideIn { from { opacity:0; transform:translateY(-10px) } to { opacity:1; transform:translateY(0) } }
   @keyframes spin { to { transform: rotate(360deg) } }
   @media (max-width: 900px) {
-    .stats-row { grid-template-columns: 1fr 1fr 1fr; }
     .admin-main { padding: 20px 16px 40px; }
     .table-wrap { overflow-x: auto; }
-    table { min-width: 820px; }
+    table { min-width: 940px; }
+    #table-receive { min-width: 640px; }
+    .tab-btn { padding: 12px 14px; font-size: 13px; }
   }
 </style>
 </head>
@@ -131,37 +163,72 @@
       <strong>⚙️ Firebase 설정 필요</strong>
       스크립트 상단의 <code>firebaseConfig</code>와 관리자 계정(ADMIN_ID / ADMIN_PW)을 실제 값으로 교체해 주세요. apply.html과 동일한 설정을 사용해야 합니다.
     </div>
+
     <div class="stats-row">
-      <div class="stat-card"><div class="stat-label">신청 부서 수</div><div class="stat-value accent" id="s-count">—</div></div>
-      <div class="stat-card"><div class="stat-label">벤슨 총 수량</div><div class="stat-value" id="s-total">—</div></div>
-      <div class="stat-card"><div class="stat-label">을지로</div><div class="stat-value" id="s-eulji">—</div></div>
-      <div class="stat-card"><div class="stat-label">죽전</div><div class="stat-value" id="s-jukjeon">—</div></div>
-      <div class="stat-card"><div class="stat-label">여의도</div><div class="stat-value" id="s-yeouido">—</div></div>
-      <div class="stat-card"><div class="stat-label">🎁 기프티콘 신청</div><div class="stat-value" id="s-gift" style="color:#B83280">—</div></div>
+      <div class="stat-card stat-tab-status stat-tab-receive"><div class="stat-label">신청 부서 수</div><div class="stat-value accent" id="s-count">—</div></div>
+      <div class="stat-card stat-tab-status"><div class="stat-label">벤슨 총 수량</div><div class="stat-value" id="s-total">—</div></div>
+      <div class="stat-card stat-tab-status stat-tab-receive"><div class="stat-label">을지로</div><div class="stat-value" id="s-eulji">—</div></div>
+      <div class="stat-card stat-tab-status"><div class="stat-label">죽전</div><div class="stat-value" id="s-jukjeon">—</div></div>
+      <div class="stat-card stat-tab-status"><div class="stat-label">여의도</div><div class="stat-value" id="s-yeouido">—</div></div>
+      <div class="stat-card stat-tab-status"><div class="stat-label">🎁 기프티콘 신청</div><div class="stat-value" id="s-gift" style="color:#B83280">—</div></div>
+      <div class="stat-card stat-tab-receive"><div class="stat-label">수령 완료</div><div class="stat-value done" id="s-done">—</div></div>
+      <div class="stat-card stat-tab-receive"><div class="stat-label">미수령</div><div class="stat-value pending" id="s-pending">—</div></div>
     </div>
-    <div class="toolbar">
-      <input class="search-input" type="text" id="search" placeholder="부서명, 담당자 검색..." oninput="renderTable()">
-      <button class="refresh-btn" onclick="loadData()">↻ 새로고침</button>
-      <button class="dl-btn" onclick="downloadXlsx()">📥 엑셀 다운로드</button>
+
+    <div class="tab-nav">
+      <button class="tab-btn active" data-tab="status" onclick="setTab('status')">📋 신청 현황</button>
+      <button class="tab-btn" data-tab="receive" onclick="setTab('receive')">✅ 수령 확인</button>
     </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>NO</th><th>부서명</th><th>담당자</th><th>연락처</th>
-            <th>을지로</th><th>죽전</th><th>여의도</th><th>합계</th><th>🎁기프티콘</th><th>수정일시</th><th></th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
+
+    <div class="tab-panel show" id="panel-status">
+      <div class="toolbar">
+        <input class="search-input" type="text" id="search-status" placeholder="부서명, 담당자 검색..." oninput="renderStatusTable()">
+        <button class="refresh-btn" onclick="loadData()">↻ 새로고침</button>
+        <button class="dl-btn" onclick="downloadXlsx()">📥 엑셀 다운로드</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>NO</th><th>부서명</th><th>담당자</th><th>연락처</th>
+              <th>을지로</th><th>죽전</th><th>여의도</th><th>합계</th><th>🎁기프티콘</th><th>수정일시</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody-status"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panel-receive">
+      <div class="toolbar">
+        <input class="search-input" type="text" id="search-receive" placeholder="부서명, 담당자 검색..." oninput="renderReceiveTable()">
+        <div class="filter-group">
+          <button class="filter-btn active" data-filter="all" onclick="setFilterReceive('all')">전체</button>
+          <button class="filter-btn" data-filter="pending" onclick="setFilterReceive('pending')">미수령</button>
+          <button class="filter-btn" data-filter="done" onclick="setFilterReceive('done')">수령완료</button>
+        </div>
+        <button class="refresh-btn" onclick="loadData()">↻ 새로고침</button>
+      </div>
+      <div class="table-wrap">
+        <table id="table-receive">
+          <thead>
+            <tr>
+              <th>NO</th><th>부서명</th><th>담당자</th><th>연락처</th>
+              <th>을지로</th>
+              <th>수령확인</th><th>수정일시</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody-receive"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
 // ═══════════════════════════════════════════════════
@@ -185,7 +252,13 @@ var ADMIN_PW = "1234";
 var CONFIGURED = firebaseConfig.apiKey !== "YOUR_API_KEY";
 var db;
 
-if (CONFIGURED) {
+if (typeof firebase === "undefined") {
+  console.warn("Firebase SDK가 로드되지 않았습니다. 네트워크/CDN 차단 여부를 확인해주세요.");
+  CONFIGURED = false;
+  var _n = document.getElementById("cfg-notice");
+  _n.classList.add("show");
+  _n.innerHTML = "<strong>⚠️ Firebase SDK 로드 실패</strong>네트워크에서 cdnjs.cloudflare.com 접속이 막혀 있거나 연결이 불안정할 수 있습니다. 페이지를 새로고침하거나 다른 네트워크에서 열어보세요.";
+} else if (CONFIGURED) {
   firebase.initializeApp(firebaseConfig);
   db = firebase.firestore();
   document.getElementById("cfg-notice").classList.remove("show");
@@ -194,6 +267,20 @@ if (CONFIGURED) {
 }
 
 var allData = [];
+var currentTab = "status"; // status | receive
+var currentFilterReceive = "all"; // all | pending | done
+
+function setTab(t) {
+  currentTab = t;
+  document.querySelectorAll(".tab-btn").forEach(function(b) {
+    b.classList.toggle("active", b.getAttribute("data-tab") === t);
+  });
+  document.getElementById("panel-status").classList.toggle("show", t === "status");
+  document.getElementById("panel-receive").classList.toggle("show", t === "receive");
+  document.querySelectorAll(".stat-card").forEach(function(c) {
+    c.style.display = c.classList.contains("stat-tab-" + t) ? "" : "none";
+  });
+}
 
 function doLogin() {
   var id = document.getElementById("login-id").value.trim();
@@ -201,6 +288,7 @@ function doLogin() {
   if (id === ADMIN_ID && pw === ADMIN_PW) {
     document.getElementById("login-wrap").style.display = "none";
     document.getElementById("admin-wrap").classList.add("show");
+    setTab("status");
     loadData();
   } else {
     document.getElementById("login-err").classList.add("show");
@@ -214,22 +302,33 @@ function doLogout() {
   document.getElementById("login-pw").value = "";
 }
 
+function setFilterReceive(f) {
+  currentFilterReceive = f;
+  document.querySelectorAll("#panel-receive .filter-btn").forEach(function(b) {
+    b.classList.toggle("active", b.getAttribute("data-filter") === f);
+  });
+  renderReceiveTable();
+}
+
 function loadData() {
-  if (!CONFIGURED) {
+  if (!CONFIGURED || !db) {
     allData = getSampleData();
-    updateStats(); renderTable();
+    updateStats(); renderStatusTable(); renderReceiveTable();
     return;
   }
-  var tbody = document.getElementById("tbody");
-  tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:40px;color:var(--gray-400)"><span class="mini-spinner"></span> 불러오는 중...</td></tr>';
+  var tbody1 = document.getElementById("tbody-status");
+  var tbody2 = document.getElementById("tbody-receive");
+  tbody1.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:40px;color:var(--gray-400)"><span class="mini-spinner"></span> 불러오는 중...</td></tr>';
+  tbody2.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--gray-400)"><span class="mini-spinner"></span> 불러오는 중...</td></tr>';
 
   db.collection(COLLECTION_NAME).orderBy("dept", "asc").get()
     .then(function(snap) {
       allData = snap.docs.map(function(d){ return Object.assign({ _id: d.id }, d.data()); });
-      updateStats(); renderTable();
+      updateStats(); renderStatusTable(); renderReceiveTable();
     })
     .catch(function(e) {
-      tbody.innerHTML = '<tr><td colspan="11" class="no-data">데이터를 불러오지 못했습니다</td></tr>';
+      tbody1.innerHTML = '<tr><td colspan="11" class="no-data">데이터를 불러오지 못했습니다</td></tr>';
+      tbody2.innerHTML = '<tr><td colspan="8" class="no-data">데이터를 불러오지 못했습니다</td></tr>';
       console.error(e);
     });
 }
@@ -239,6 +338,7 @@ function getSampleData() {
     _id: "sample1", dept: "(예시) 인재확보팀", manager: "홍길동", phone: "010-0000-0000",
     qtyEulji: 13, qtyJukjeon: 0, qtyYeouido: 0, qtyTotal: 13,
     giftRecipients: [{ name: "김철수", phone: "010-1234-5678" }, { name: "이영희", phone: "010-2345-6789" }],
+    received: false, receivedBy: "", receivedAt: null,
     updatedAt: { toDate: function(){ return new Date(); } }
   }];
 }
@@ -249,21 +349,26 @@ function updateStats() {
   var j = allData.reduce(function(s,r){ return s + (r.qtyJukjeon||0); }, 0);
   var y = allData.reduce(function(s,r){ return s + (r.qtyYeouido||0); }, 0);
   var g = allData.reduce(function(s,r){ return s + ((r.giftRecipients||[]).length); }, 0);
+  var done = allData.filter(function(r){ return r.received; }).length;
+  var pending = allData.length - done;
   document.getElementById("s-count").textContent   = allData.length + "개 부서";
   document.getElementById("s-total").textContent   = total + "개";
   document.getElementById("s-eulji").textContent   = e + "개";
   document.getElementById("s-jukjeon").textContent = j + "개";
   document.getElementById("s-yeouido").textContent = y + "개";
   document.getElementById("s-gift").textContent    = g + "명";
+  document.getElementById("s-done").textContent    = done + "개 부서";
+  document.getElementById("s-pending").textContent = pending + "개 부서";
 }
 
-function renderTable() {
-  var q = document.getElementById("search").value.toLowerCase();
+// ── 탭1: 신청 현황 (읽기 전용 — 신청자가 제출한 값 그대로 표시) ──
+function renderStatusTable() {
+  var q = document.getElementById("search-status").value.toLowerCase();
   var filtered = allData.filter(function(r) {
     return !q || [r.dept, r.manager].some(function(x){ return (x||"").toLowerCase().includes(q); });
   });
 
-  var tbody = document.getElementById("tbody");
+  var tbody = document.getElementById("tbody-status");
   if (filtered.length === 0) {
     tbody.innerHTML = '<tr><td colspan="11" class="no-data">표시할 데이터가 없습니다</td></tr>';
     return;
@@ -279,31 +384,97 @@ function renderTable() {
       '<td style="font-weight:600">' + esc(r.dept||"") + '</td>' +
       '<td style="color:var(--gray-600)">' + esc(r.manager||"") + '</td>' +
       '<td style="font-size:12px;color:var(--gray-600)">' + esc(r.phone||"") + '</td>' +
-      '<td class="num qty-input"><input type="number" min="0" value="' + (r.qtyEulji||0) + '" data-field="qtyEulji" onchange="markDirty(this)"></td>' +
-      '<td class="num qty-input"><input type="number" min="0" value="' + (r.qtyJukjeon||0) + '" data-field="qtyJukjeon" onchange="markDirty(this)"></td>' +
-      '<td class="num qty-input"><input type="number" min="0" value="' + (r.qtyYeouido||0) + '" data-field="qtyYeouido" onchange="markDirty(this)"></td>' +
-      '<td class="num" style="font-weight:800;color:var(--orange)" data-total>' + (r.qtyTotal||0) + '</td>' +
+      '<td class="num">' + (r.qtyEulji||0) + '</td>' +
+      '<td class="num">' + (r.qtyJukjeon||0) + '</td>' +
+      '<td class="num">' + (r.qtyYeouido||0) + '</td>' +
+      '<td class="num" style="font-weight:800;color:var(--orange)">' + (r.qtyTotal||0) + '</td>' +
       '<td class="num">' + giftCell + '</td>' +
       '<td style="font-size:12px;color:var(--gray-400);white-space:nowrap">' + dt + '</td>' +
-      '<td><div class="row-btns">' +
-        '<button class="row-btn save" onclick="saveRow(\'' + r._id + '\')">저장</button>' +
-        '<button class="row-btn del" onclick="delRow(\'' + r._id + '\',\'' + esc(r.dept||"") + '\')">삭제</button>' +
-      '</div></td>' +
+      '<td><button class="row-btn del" onclick="delRow(\'' + r._id + '\',\'' + esc(r.dept||"") + '\')">삭제</button></td>' +
     '</tr>';
   }).join("");
 }
 
-function esc(s) { return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+// ── 탭2: 수령 확인 (을지로만 대상 — 직접 배부하는 을지로만 수량 수정 + 수령 체크) ──
+function renderReceiveTable() {
+  var q = document.getElementById("search-receive").value.toLowerCase();
+  var filtered = allData.filter(function(r) {
+    var matchKw = !q || [r.dept, r.manager].some(function(x){ return (x||"").toLowerCase().includes(q); });
+    var matchFilter = currentFilterReceive === "all" ||
+      (currentFilterReceive === "done" && r.received) ||
+      (currentFilterReceive === "pending" && !r.received);
+    return matchKw && matchFilter;
+  });
 
-// 인라인 수정: 수량 변경 시 합계 재계산 + 저장 버튼 노출
-function markDirty(inputEl) {
+  var tbody = document.getElementById("tbody-receive");
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" class="no-data">표시할 데이터가 없습니다</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtered.map(function(r, i) {
+    var dt = r.updatedAt && r.updatedAt.toDate ? fmtDate(r.updatedAt.toDate()) : "—";
+    var receivedAtLine = (r.received && r.receivedAt && r.receivedAt.toDate)
+      ? '<span class="received-at-mini">' + fmtDate(r.receivedAt.toDate()) + '</span>' : '';
+    return '<tr data-id="' + r._id + '">' +
+      '<td style="color:var(--gray-400);font-size:12px">' + (i+1) + '</td>' +
+      '<td style="font-weight:600">' + esc(r.dept||"") + '</td>' +
+      '<td style="color:var(--gray-600)">' + esc(r.manager||"") + '</td>' +
+      '<td style="font-size:12px;color:var(--gray-600)">' + esc(r.phone||"") + '</td>' +
+      '<td class="num qty-input"><input type="number" min="0" value="' + (r.qtyEulji||0) + '" data-field="qtyEulji" onchange="markDirtyReceive(this)"></td>' +
+      '<td class="num">' +
+        '<div class="receive-cell-inner">' +
+          '<label class="receive-check">' +
+            '<input type="checkbox" data-field="received" ' + (r.received?'checked':'') + ' onchange="markDirtyReceive(this)">' +
+            (r.received ? '<span style="color:var(--green)">수령완료</span>' : '<span style="color:var(--gray-400)">미수령</span>') +
+          '</label>' +
+          '<input type="text" class="receiver-mini" data-field="receivedBy" placeholder="확인자" value="' + esc(r.receivedBy||"") + '" oninput="markDirtyReceive(this)">' +
+          receivedAtLine +
+        '</div>' +
+      '</td>' +
+      '<td style="font-size:12px;color:var(--gray-400);white-space:nowrap">' + dt + '</td>' +
+      '<td><button class="row-btn save" onclick="saveRowReceive(\'' + r._id + '\')">저장</button></td>' +
+    '</tr>';
+  }).join("");
+}
+
+function markDirtyReceive(inputEl) {
   var tr = inputEl.closest("tr");
-  var e = Number(tr.querySelector('[data-field="qtyEulji"]').value) || 0;
-  var j = Number(tr.querySelector('[data-field="qtyJukjeon"]').value) || 0;
-  var y = Number(tr.querySelector('[data-field="qtyYeouido"]').value) || 0;
-  tr.querySelector('[data-total]').textContent = (e + j + y);
   tr.querySelector('.row-btn.save').style.display = "inline-block";
 }
+
+function saveRowReceive(id) {
+  if (!CONFIGURED) { showToast("Firebase 미설정 상태입니다", "error"); return; }
+  var tr = document.querySelector('#tbody-receive tr[data-id="' + id + '"]');
+  var eIdx = allData.findIndex(function(r){ return r._id === id; });
+  var prev = eIdx > -1 ? allData[eIdx] : {};
+  var e = Number(tr.querySelector('[data-field="qtyEulji"]').value) || 0;
+  var total = e + (prev.qtyJukjeon||0) + (prev.qtyYeouido||0);
+  var received = tr.querySelector('[data-field="received"]').checked;
+  var receivedBy = tr.querySelector('[data-field="receivedBy"]').value.trim();
+
+  var payload = {
+    qtyEulji: e, qtyTotal: total,
+    received: received, receivedBy: receivedBy,
+    receivedAt: received ? firebase.firestore.FieldValue.serverTimestamp() : null,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  db.collection(COLLECTION_NAME).doc(id).set(payload, { merge: true })
+    .then(function() {
+      if (eIdx > -1) {
+        allData[eIdx].qtyEulji = e; allData[eIdx].qtyTotal = total;
+        allData[eIdx].received = received; allData[eIdx].receivedBy = receivedBy;
+        allData[eIdx].receivedAt = received ? { toDate: function(){ return new Date(); } } : null;
+      }
+      updateStats();
+      renderReceiveTable();
+      renderStatusTable();
+      showToast("저장되었습니다");
+    })
+    .catch(function(){ showToast("저장에 실패했습니다", "error"); });
+}
+
+function esc(s) { return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 
 function showGifts(id) {
   var r = allData.find(function(x){ return x._id === id; });
@@ -312,35 +483,13 @@ function showGifts(id) {
   alert((r.dept||"") + " 기프티콘 신청자 (" + r.giftRecipients.length + "명)\n\n" + lines);
 }
 
-function saveRow(id) {
-  if (!CONFIGURED) { showToast("Firebase 미설정 상태입니다", "error"); return; }
-  var tr = document.querySelector('tr[data-id="' + id + '"]');
-  var e = Number(tr.querySelector('[data-field="qtyEulji"]').value) || 0;
-  var j = Number(tr.querySelector('[data-field="qtyJukjeon"]').value) || 0;
-  var y = Number(tr.querySelector('[data-field="qtyYeouido"]').value) || 0;
-  var total = e + j + y;
-
-  db.collection(COLLECTION_NAME).doc(id).set({
-    qtyEulji: e, qtyJukjeon: j, qtyYeouido: y, qtyTotal: total,
-    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-  }, { merge: true })
-    .then(function() {
-      var idx = allData.findIndex(function(r){ return r._id === id; });
-      if (idx > -1) { allData[idx].qtyEulji = e; allData[idx].qtyJukjeon = j; allData[idx].qtyYeouido = y; allData[idx].qtyTotal = total; }
-      updateStats();
-      tr.querySelector('.row-btn.save').style.display = "none";
-      showToast("저장되었습니다");
-    })
-    .catch(function(){ showToast("저장에 실패했습니다", "error"); });
-}
-
 function delRow(id, name) {
   if (!confirm('"' + name + '" 부서 신청을 삭제하시겠습니까?')) return;
   if (!CONFIGURED) { showToast("Firebase 미설정 상태입니다", "error"); return; }
   db.collection(COLLECTION_NAME).doc(id).delete()
     .then(function() {
       allData = allData.filter(function(r){ return r._id !== id; });
-      updateStats(); renderTable();
+      updateStats(); renderStatusTable(); renderReceiveTable();
       showToast(name + " 신청이 삭제되었습니다");
     })
     .catch(function(){ showToast("삭제에 실패했습니다", "error"); });
@@ -355,7 +504,7 @@ function fmtDate(d) {
 function downloadXlsx() {
   if (allData.length === 0) { showToast("다운로드할 데이터가 없습니다", "error"); return; }
 
-  var q = document.getElementById("search").value.toLowerCase();
+  var q = document.getElementById("search-status").value.toLowerCase();
   var exportData = allData.filter(function(r) {
     return !q || [r.dept, r.manager].some(function(x){ return (x||"").toLowerCase().includes(q); });
   });
@@ -415,15 +564,20 @@ function downloadXlsx() {
   ];
   XLSX.utils.book_append_sheet(wb, ws1, "신청자 목록");
 
-  // ── 담당자 정보 시트 ──
-  var ws2Headers = ["NO","부서명","담당자","연락처","을지로","죽전","여의도","신청 수량","수정일시"];
+  // ── 담당자 정보 시트 (수령여부 포함) ──
+  var ws2Headers = ["NO","부서명","담당자","연락처","을지로","죽전","여의도","신청 수량","수령여부","확인자","수령시각","수정일시"];
   var ws2Rows = exportData.map(function(r, i) {
     var dt = r.updatedAt && r.updatedAt.toDate ? fmtDate(r.updatedAt.toDate()) : "";
-    return [dCell(i+1,"n"), dCell(r.dept||"","s"), dCell(r.manager||""), dCell(r.phone||""), dCell(r.qtyEulji||0,"n"), dCell(r.qtyJukjeon||0,"n"), dCell(r.qtyYeouido||0,"n"), tCell(r.qtyTotal||0), dCell(dt)];
+    var rdt = r.received && r.receivedAt && r.receivedAt.toDate ? fmtDate(r.receivedAt.toDate()) : "";
+    return [
+      dCell(i+1,"n"), dCell(r.dept||"","s"), dCell(r.manager||""), dCell(r.phone||""),
+      dCell(r.qtyEulji||0,"n"), dCell(r.qtyJukjeon||0,"n"), dCell(r.qtyYeouido||0,"n"), tCell(r.qtyTotal||0),
+      dCell(r.received ? "수령완료" : "미수령"), dCell(r.receivedBy||""), dCell(rdt), dCell(dt)
+    ];
   });
   var ws2Data = [ws2Headers.map(hCell)].concat(ws2Rows);
   var ws2 = XLSX.utils.aoa_to_sheet(ws2Data);
-  ws2["!cols"] = [{wch:6},{wch:22},{wch:12},{wch:16},{wch:10},{wch:10},{wch:10},{wch:12},{wch:16}];
+  ws2["!cols"] = [{wch:6},{wch:22},{wch:12},{wch:16},{wch:10},{wch:10},{wch:10},{wch:12},{wch:10},{wch:12},{wch:16},{wch:16}];
   XLSX.utils.book_append_sheet(wb, ws2, "상세 정보");
 
   // ── 기프티콘(배스킨라빈스) 신청자 명단 시트 ──
