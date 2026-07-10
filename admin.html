@@ -432,7 +432,7 @@ function renderReceiveTable() {
             '<input type="checkbox" data-field="received" ' + (r.received?'checked':'') + ' onchange="markDirtyReceive(this)">' +
             (r.received ? '<span style="color:var(--green)">수령완료</span>' : '<span style="color:var(--gray-400)">미수령</span>') +
           '</label>' +
-          '<input type="text" class="receiver-mini" data-field="receivedBy" placeholder="확인자" value="' + esc(r.receivedBy||"") + '" oninput="markDirtyReceive(this)">' +
+          '<input type="text" class="receiver-mini" data-field="receivedBy" placeholder="수령자" value="' + esc(r.receivedBy||"") + '" oninput="markDirtyReceive(this)">' +
           receivedAtLine +
         '</div>' +
       '</td>' +
