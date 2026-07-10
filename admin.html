@@ -59,7 +59,7 @@
   .guide-num { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; }
 
   .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 12px; margin-bottom: 24px; }
-  .stat-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); padding: 15px 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); overflow: hidden; }
+  .stat-card { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); padding: 15px 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); overflow: hidden; text-align: center; }
   .stat-label { font-size: 11.5px; color: var(--gray-600); margin-bottom: 8px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .stat-value { font-size: 20px; font-weight: 900; color: var(--gray-800); white-space: nowrap; }
   .stat-value.accent { color: var(--orange); }
@@ -88,6 +88,7 @@
 
   .table-wrap { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
   table { width: 100%; border-collapse: collapse; }
+  #table-receive { table-layout: fixed; }
   thead tr { background: var(--gray-50); border-bottom: 2px solid var(--gray-200); }
   th { padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 700; color: var(--gray-600); letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
   td { padding: 12px 16px; font-size: 13px; color: var(--gray-800); border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
@@ -211,6 +212,10 @@
       </div>
       <div class="table-wrap">
         <table id="table-receive">
+          <colgroup>
+            <col style="width:60px"><col style="width:22%"><col style="width:14%"><col style="width:16%">
+            <col style="width:100px"><col style="width:160px"><col style="width:150px"><col style="width:70px">
+          </colgroup>
           <thead>
             <tr>
               <th>NO</th><th>부서명</th><th>담당자</th><th>연락처</th>
@@ -337,7 +342,7 @@ function getSampleData() {
   return [{
     _id: "sample1", dept: "(예시) 인재확보팀", manager: "홍길동", phone: "010-0000-0000",
     qtyEulji: 13, qtyJukjeon: 0, qtyYeouido: 0, qtyTotal: 13,
-    giftRecipients: [{ name: "김철수", phone: "010-1234-5678" }, { name: "이영희", phone: "010-2345-6789" }],
+    giftRecipients: [{ name: "김철수", phone: "010-1234-5678" }, { name: "이영희", phone: "010-2345-6789", note: "해외 근무로 배우자가 대리수령" }],
     received: false, receivedBy: "", receivedAt: null,
     updatedAt: { toDate: function(){ return new Date(); } }
   }];
@@ -476,10 +481,17 @@ function saveRowReceive(id) {
 
 function esc(s) { return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 
+function giftNote(g) {
+  return g.note || g.remark || g.memo || g.comment || "";
+}
+
 function showGifts(id) {
   var r = allData.find(function(x){ return x._id === id; });
   if (!r || !(r.giftRecipients||[]).length) return;
-  var lines = r.giftRecipients.map(function(g, i){ return (i+1) + ". " + g.name + " — " + g.phone; }).join("\n");
+  var lines = r.giftRecipients.map(function(g, i){
+    var note = giftNote(g);
+    return (i+1) + ". " + g.name + " — " + g.phone + (note ? "\n    비고: " + note : "");
+  }).join("\n");
   alert((r.dept||"") + " 기프티콘 신청자 (" + r.giftRecipients.length + "명)\n\n" + lines);
 }
 
@@ -581,18 +593,18 @@ function downloadXlsx() {
   XLSX.utils.book_append_sheet(wb, ws2, "상세 정보");
 
   // ── 기프티콘(배스킨라빈스) 신청자 명단 시트 ──
-  var ws3Headers = ["NO","부서명","성명","연락처"];
+  var ws3Headers = ["NO","부서명","성명","연락처","비고"];
   var ws3Rows = [];
   var gNo = 1;
   exportData.forEach(function(r) {
     (r.giftRecipients||[]).forEach(function(g) {
-      ws3Rows.push([dCell(gNo++,"n"), dCell(r.dept||"","s"), dCell(g.name||""), dCell(g.phone||"")]);
+      ws3Rows.push([dCell(gNo++,"n"), dCell(r.dept||"","s"), dCell(g.name||""), dCell(g.phone||""), dCell(giftNote(g),"s",LEFT)]);
     });
   });
   if (ws3Rows.length > 0) {
     var ws3Data = [ws3Headers.map(hCell)].concat(ws3Rows);
     var ws3 = XLSX.utils.aoa_to_sheet(ws3Data);
-    ws3["!cols"] = [{wch:6},{wch:22},{wch:14},{wch:18}];
+    ws3["!cols"] = [{wch:6},{wch:22},{wch:14},{wch:18},{wch:28}];
     XLSX.utils.book_append_sheet(wb, ws3, "기프티콘 신청자");
   }
 
